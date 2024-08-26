@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const joinGroupBtn = document.getElementById("join-group-btn");
     const searchGroupBtn = document.getElementById("search-group-btn");
+    const resetUserBtn = document.getElementById("reset-user-btn");
     const groupIdInput = document.getElementById("group-id");
     const statusDiv = document.getElementById("status");
 
@@ -17,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const data = await response.json();
                     if (data.server) {
                         // If a redirect occurs, handle it (e.g., Steam connection URL)
-                        window.location.assign(`steam://connect/${data.server}`);
+                        window.location.assign(`steam://connect/${data.server}/quickpick_${data.quickpick}`);
                     }
                     statusDiv.innerText = `Pinged at ${new Date().toLocaleTimeString()}: ${JSON.stringify(data)}`;
                 }
@@ -68,6 +69,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             } catch (error) {
                 statusDiv.innerText = `Error searching group: ${error.message}`;
+            }
+        } else {
+            statusDiv.innerText = `Please enter a Group ID.`;
+        }
+    });
+
+
+    // Function to handle searching the group
+    resetUserBtn.addEventListener("click", async () => {
+        const groupId = groupIdInput.value.trim();
+        if (groupId) {
+            try {
+                const response = await fetch(`http://localhost:8080/reset-user/${groupId}`, {
+                    method: 'POST',
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.innerText = `Reset user in group ${data.group}`;
+                } else {
+                    statusDiv.innerText = `Failed to reset user. Status: ${response.status}`;
+                }
+            } catch (error) {
+                statusDiv.innerText = `Error resetting user: ${error.message}`;
             }
         } else {
             statusDiv.innerText = `Please enter a Group ID.`;

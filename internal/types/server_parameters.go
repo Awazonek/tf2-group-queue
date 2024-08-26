@@ -2,7 +2,7 @@ package types
 
 // Parameters that a Group is looking for
 type ServerParameters struct {
-	Region                string     `json:"region"`
+	Regions               []string   `json:"region"`
 	GameModes             []GameMode `json:"game_modes"`
 	MinPlayers            int        `json:"min_players"`
 	MaxPlayers            int        `json:"max_players"`              // Used for blocking out 1000 uncles or 100 player servers

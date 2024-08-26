@@ -18,8 +18,8 @@ type Group struct {
 // returns true if the server matches the groups requirements
 func (g *Group) MatchesServer(server Tf2Server) bool {
 	// Basic checks
-	if g.Parameters.Region != server.Region {
-		util.Log("Server %s is too far away, wanted region %s and we got %s", server.Name, g.Parameters.Region, server.Region)
+	if !util.Contains(g.Parameters.Regions, server.Region) {
+		util.Log("Server %s is too far away, wanted region %s and we got %s", server.Name, strings.Join(g.Parameters.Regions, ","), server.Region)
 		return false
 	}
 

@@ -45,6 +45,7 @@ func (s *Tf2GroupServer) Start() {
 // set URL routes for clients to join/search
 func (s *Tf2GroupServer) setRoutes() {
 	s.router.HandleFunc("/join-group/{groupID}", s.joinGroup).Methods("POST")
+	s.router.HandleFunc("/create-group/{groupID}", s.createGroup).Methods("POST")
 	s.router.HandleFunc("/search-group/{groupID}", s.searchGroup).Methods("POST")
 	s.router.HandleFunc("/reset-user/{groupID}", s.resetUser).Methods("POST")
 	s.router.HandleFunc("/user-ping/{groupID}", s.userPing).Methods("GET")
@@ -74,6 +75,7 @@ func (s *Tf2GroupServer) resetUser(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := map[string]string{
 			"status": "ok",
+			"group":  groupID,
 		}
 		json.NewEncoder(w).Encode(response)
 
@@ -113,7 +115,7 @@ func (s *Tf2GroupServer) userPing(w http.ResponseWriter, r *http.Request) {
 			response := map[string]string{
 				"group":     groupID,
 				"server":    serverAddr,
-				"quickpick": string(count),
+				"quickpick": fmt.Sprintf("%d", count),
 			}
 			json.NewEncoder(w).Encode(response)
 		} else {
@@ -151,6 +153,17 @@ func (s *Tf2GroupServer) joinGroup(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 	} else {
 		http.Error(w, "Invalid group", http.StatusNotFound)
+	}
+}
+
+// TODO: Allow users to create groups
+func (s *Tf2GroupServer) createGroup(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	groupID := vars["groupID"]
+
+	if _, exists := s.groups[groupID]; exists {
+		http.Error(w, "Group already searching", http.StatusBadRequest)
+		return
 	}
 }
 
