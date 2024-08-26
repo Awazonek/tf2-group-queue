@@ -15,9 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.connect_addr) {
+                    if (data.server) {
                         // If a redirect occurs, handle it (e.g., Steam connection URL)
-                        window.location.assign(data.connect_addr);
+                        window.location.assign(`steam://connect/${data.server}`);
                     }
                     statusDiv.innerText = `Pinged at ${new Date().toLocaleTimeString()}: ${JSON.stringify(data)}`;
                 }
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    statusDiv.innerText = `Search started for group ${error.message}`;
+                    statusDiv.innerText = `Search started for group ${data.group}`;
                 } else {
                     statusDiv.innerText = `Failed to start search. Status: ${response.status}`;
                 }

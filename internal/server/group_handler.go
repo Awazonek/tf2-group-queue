@@ -46,8 +46,11 @@ func (s *Tf2GroupServer) populateDefaultGroup() {
 		Region: "us-east",
 		GameModes: []types.GameMode{
 			types.Payload,
+			types.AttackDefend,
 		},
-		MinPlayers:        0,
-		MinSpaceAvailable: 2,
+		MinPlayers:            0,
+		MaxPlayers:            32,
+		DisableThousandUncles: true,
+		MinSpaceAvailable:     2,
 	})
 }
