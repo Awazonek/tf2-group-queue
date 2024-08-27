@@ -1,6 +1,6 @@
 package util
 
-func Contains(slice []string, item string) bool {
+func Contains[T comparable](slice []T, item T) bool {
 	for _, str := range slice {
 		if str == item {
 			return true

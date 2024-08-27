@@ -56,14 +56,14 @@ func (s *Tf2GroupServer) MatchGroup(group types.Group) {
 
 func (s *Tf2GroupServer) populateDefaultGroup() {
 	s.CreateGroup("GuuzTesting", types.ServerParameters{
-		Regions: []string{"us-east", "us-central"},
-		GameModes: []types.GameMode{
-			types.Payload,
-			types.AttackDefend,
+		Regions:    []string{"us-east", "us-central"},
+		Maps:       util.AllMaps,
+		MinPlayers: 8,
+		MaxPlayers: 32,
+		CustomRules: types.CustomRules{
+			DisableThousandUncles: true,
+			UnknownMapGameModes:   []types.GameMode{types.Payload},
 		},
-		MinPlayers:            8,
-		MaxPlayers:            32,
-		DisableThousandUncles: true,
-		MinSpaceAvailable:     2,
+		MinSpaceAvailable: 1,
 	})
 }

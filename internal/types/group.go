@@ -12,7 +12,15 @@ type Group struct {
 	ID         string           `json:"id"`
 	Parameters ServerParameters `json:"server_parameters"`
 	Users      map[string]User  `json:"users"`
+	ServerInfo ServerInfo       `json:"server_info"`
 	Searching  bool             `json:"searching"`
+}
+
+type ServerInfo struct {
+	IP       string   `json:"ip"`
+	Port     string   `json:"port"`
+	Map      string   `json:"map"`
+	GameMode GameMode `json:"game_mode"`
 }
 
 // returns true if the server matches the groups requirements
@@ -33,11 +41,6 @@ func (g *Group) MatchesServer(server Tf2Server) bool {
 		return false
 	}
 
-	if g.Parameters.DisableThousandUncles && strings.Contains(server.Name, "One Thousand Uncles") {
-		util.Log("Server is a Thousand Uncles server and that is disabled")
-		return false
-	}
-
 	playerSlots := server.MaxPlayers - server.Players
 	wantedSlots := len(g.Users) + g.Parameters.MinSpaceAvailable
 	// Check player count
@@ -48,11 +51,13 @@ func (g *Group) MatchesServer(server Tf2Server) bool {
 		util.Log("Server %s has %d slots open and we want %d", server.Name, playerSlots, wantedSlots)
 	}
 
-	// If server has correct game mode
-	for _, mode := range g.Parameters.GameModes {
-		if mode == server.Mode {
+	if !util.Contains(g.Parameters.Maps, server.Map) {
+		if util.Contains(g.Parameters.CustomRules.UnknownMapGameModes, GetGameMode(server.Map)) {
+			util.Log("Server %s has map %s but we are allowing it because it is an approved game mode", server.Name, server.Map)
 			return true
 		}
+	} else {
+		return true // map is what we want!
 	}
 	util.Log("Server %s does not have the correct game mode, it has %d", server.Name, server.Mode)
 	return false
