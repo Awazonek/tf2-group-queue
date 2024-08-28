@@ -1,9 +1,7 @@
 package types
 
 import (
-	"fmt"
 	"strings"
-	"time"
 
 	"github.com/awazonek/tf2-group-queue/internal/util"
 )
@@ -13,12 +11,13 @@ type Group struct {
 	Parameters ServerParameters `json:"server_parameters"`
 	Users      map[string]User  `json:"users"`
 	ServerInfo ServerInfo       `json:"server_info"`
+	QueueTries int              `json:"queue_tries"`
 	Searching  bool             `json:"searching"`
 }
 
 type ServerInfo struct {
 	IP       string   `json:"ip"`
-	Port     string   `json:"port"`
+	Port     int      `json:"port"`
 	Map      string   `json:"map"`
 	GameMode GameMode `json:"game_mode"`
 }
@@ -63,16 +62,11 @@ func (g *Group) MatchesServer(server Tf2Server) bool {
 	return false
 }
 
-func (g *Group) ConnectUsers(server Tf2Server) {
-	for key := range g.Users {
-		user := g.Users[key]
-		// delete user if they are older
-		if time.Since(user.LastSeen) > 5*time.Minute {
-			delete(g.Users, key)
-			continue
-		}
-
-		user.ServerToConnect = fmt.Sprintf("%s:%d", server.IP, server.Port)
-		g.Users[key] = user
+func (g *Group) getUserFacingGroupData() UserGroupData {
+	return UserGroupData{
+		ID:         g.ID,
+		Parameters: g.Parameters,
+		ServerInfo: g.ServerInfo,
+		Searching:  g.Searching,
 	}
 }

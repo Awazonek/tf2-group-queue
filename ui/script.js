@@ -1,3 +1,4 @@
+let globalUrl = `http://localhost:8080`
 document.addEventListener("DOMContentLoaded", () => {
     const joinGroupBtn = document.getElementById("join-group-btn");
     const searchGroupBtn = document.getElementById("search-group-btn");
@@ -12,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setInterval(async () => {
             try {
                 const groupId = groupIdInput.value.trim();
-                const response = await fetch(`http://http://tf2communityqueuesystemtesting.com/user-ping/${groupId}`); 
+                const response = await fetch(`${globalUrl}/user-ping/${groupId}`); 
 
                 if (response.ok) {
                     const data = await response.json();
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const groupId = groupIdInput.value.trim();
         if (groupId) {
             try {
-                const response = await fetch(`http://tf2communityqueuesystemtesting.com/join-group/${groupId}`, {
+                const response = await fetch(`${globalUrl}/join-group/${groupId}`, {
                     method: 'POST',
                 });
 
@@ -57,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const groupId = groupIdInput.value.trim();
         if (groupId) {
             try {
-                const response = await fetch(`http://tf2communityqueuesystemtesting.com/search-group/${groupId}`, {
+                const response = await fetch(`${globalUrl}/search-group/${groupId}`, {
                     method: 'POST',
                 });
 
@@ -81,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const groupId = groupIdInput.value.trim();
         if (groupId) {
             try {
-                const response = await fetch(`http://tf2communityqueuesystemtesting.com/reset-user/${groupId}`, {
+                const response = await fetch(`${globalUrl}/reset-user/${groupId}`, {
                     method: 'POST',
                 });
 

@@ -1,4 +1,6 @@
-package util
+package globals
+
+import "github.com/awazonek/tf2-group-queue/internal/types"
 
 var AllRegions = []string{
 	"us-east",
@@ -79,4 +81,34 @@ var AllMaps = []string{
 	"pass_brickyard",
 	"pass_warehouse",
 	"pl_breadspace",
+}
+
+var AllGameModes = []types.GameMode{
+	types.Unknown,
+	types.Payload,
+	types.CaptureTheFlag,
+	types.ControlPoint,
+	types.KingOfTheHill,
+	types.AttackDefend,
+	types.PayloadRace,
+	types.PlayerDestruction,
+	types.Other,
+}
+
+func GetMaxedOutGroup() types.UserGroupData {
+	return types.UserGroupData{
+		ID: "Metadata",
+		Parameters: types.ServerParameters{
+			Regions:    AllRegions,
+			Maps:       AllMaps,
+			MinPlayers: 0,
+			MaxPlayers: 32,
+			CustomRules: types.CustomRules{
+				DisableThousandUncles: true,
+				UnknownMapGameModes:   AllGameModes,
+			},
+			MinSpaceAvailable: 0,
+		},
+		Searching: false,
+	}
 }

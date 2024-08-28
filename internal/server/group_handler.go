@@ -3,6 +3,7 @@ package server
 import (
 	"sort"
 
+	"github.com/awazonek/tf2-group-queue/internal/globals"
 	"github.com/awazonek/tf2-group-queue/internal/types"
 	"github.com/awazonek/tf2-group-queue/internal/util"
 )
@@ -42,11 +43,19 @@ func (s *Tf2GroupServer) MatchGroup(group types.Group) {
 				return validServers[i].Players > validServers[j].Players
 			})
 
+			bestServer := validServers[0]
 			group.Searching = false
-			group.ConnectUsers(validServers[0])
+			group.ServerInfo = types.ServerInfo{
+				IP:       bestServer.IP,
+				Port:     bestServer.Port,
+				Map:      bestServer.Map,
+				GameMode: types.GetGameMode(bestServer.Map),
+			}
 			s.groups[group.ID] = group
 		} else {
 			util.Log("No valid server found for group %s", group.ID)
+			group.QueueTries += 1
+			s.groups[group.ID] = group
 		}
 	} else {
 
@@ -57,8 +66,8 @@ func (s *Tf2GroupServer) MatchGroup(group types.Group) {
 func (s *Tf2GroupServer) populateDefaultGroup() {
 	s.CreateGroup("GuuzTesting", types.ServerParameters{
 		Regions:    []string{"us-east", "us-central"},
-		Maps:       util.AllMaps,
-		MinPlayers: 8,
+		Maps:       globals.AllMaps,
+		MinPlayers: 0,
 		MaxPlayers: 32,
 		CustomRules: types.CustomRules{
 			DisableThousandUncles: true,
