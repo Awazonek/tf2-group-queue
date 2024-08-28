@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const resetUserBtn = document.getElementById("reset-user-btn");
     const groupIdInput = document.getElementById("group-id");
     const statusDiv = document.getElementById("status");
+    // Start the background ping when the page loads
+    startPinging();
     listGroups();
 
 
@@ -66,6 +68,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     const resp = await response.json();
                     displaySelectedGroup(resp.group)
+                    
+                    if (resp.group.server_info.ip && resp.group.server_info.port) {
+                        const quickPick = incrementGroupValue(resp.group.server_info.ip, resp.group.server_info.port)
+
+                        window.location.assign(`steam://connect/${resp.group.server_info.ip}:${resp.group.server_info.port}/quickpick_${quickPick}`);
+                        selectedGroupIP = resp.group.server_info.ip
+                        selectedGroupPort = resp.group.server_info.port
+                    }
                 } else {
                     alert('Failed to join the group.');
                 }
@@ -109,18 +119,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         selectedGroupContainer.appendChild(mapsList);
 
-        const searchButton = document.createElement('button');
-        searchButton.className = 'search-btn';
-        searchButton.textContent = 'Queue';
-        searchButton.onclick = () => searchGroup();
         selectedGroupId = group.id
         selectedGroupIP = group.server_info.ip
         selectedGroupPort = group.server_info.port
-        selectedGroupContainer.appendChild(searchButton);
         selectedGroupSection.style.display = 'block';
         if (group.searching) {
-            searchButton.style.display = 'none';
+            const searching = document.createElement('p');
+            searching.textContent = `Searching!`;
+            selectedGroupContainer.appendChild(searching);
         } else {
+            const searchButton = document.createElement('button');
+            searchButton.className = 'search-btn';
+            searchButton.textContent = 'Queue';
+            searchButton.onclick = () => searchGroup();
+            selectedGroupContainer.appendChild(searchButton);
             searchButton.style.display = 'block';
         }
     }
@@ -184,6 +196,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // Start the background ping when the page loads
-    startPinging();
 });
