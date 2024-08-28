@@ -3,9 +3,8 @@ package types
 import "time"
 
 type User struct {
-	ID           string         `json:"id"`
-	LastSeen     time.Time      `json:"timestamp"`    // Last seen, kicking them out after X minutes
-	SessionCount map[string]int `json:"session_data"` // history of user connecting to server
+	ID       string    `json:"id"`
+	LastSeen time.Time `json:"timestamp"` // Last seen, kicking them out after X minutes
 }
 
 type UserGroupData struct {

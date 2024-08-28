@@ -127,11 +127,11 @@ func (s *Tf2GroupServer) userPing(w http.ResponseWriter, r *http.Request) {
 		s.groups[groupID] = group
 		w.Header().Set("Content-Type", "application/json")
 		response := map[string]interface{}{
-			"status":   "ok",
-			"in_group": true,
-			"group":    types.GroupToUserGroup(group),
+			"status": "ok",
+			"group":  types.GroupToUserGroup(group),
 		}
 		json.NewEncoder(w).Encode(response)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	response := map[string]string{
@@ -148,17 +148,16 @@ func (s *Tf2GroupServer) joinGroup(w http.ResponseWriter, r *http.Request) {
 	if _, exists := s.groups[groupID]; exists {
 		userId := getIPWithoutPort(r.RemoteAddr)
 		user := types.User{
-			ID:           userId,
-			LastSeen:     time.Now().UTC(),
-			SessionCount: make(map[string]int),
+			ID:       userId,
+			LastSeen: time.Now().UTC(),
 		}
 		group := s.groups[groupID]
 		group.Users[userId] = user
 
 		w.Header().Set("Content-Type", "application/json")
-		response := map[string]string{
-			"group":        groupID,
-			"group_status": "joined",
+		response := map[string]interface{}{
+			"group":    types.GroupToUserGroup(group),
+			"response": "ok",
 		}
 		json.NewEncoder(w).Encode(response)
 	} else {
@@ -248,9 +247,8 @@ func (s *Tf2GroupServer) searchGroup(w http.ResponseWriter, r *http.Request) {
 
 		s.MatchGroup(group)
 		w.Header().Set("Content-Type", "application/json")
-		response := map[string]string{
-			"group":        groupID,
-			"group_status": "searching",
+		response := map[string]interface{}{
+			"group": types.GroupToUserGroup(group),
 		}
 		json.NewEncoder(w).Encode(response)
 	} else {

@@ -46,10 +46,11 @@ func (s *Tf2GroupServer) MatchGroup(group types.Group) {
 			bestServer := validServers[0]
 			group.Searching = false
 			group.ServerInfo = types.ServerInfo{
-				IP:       bestServer.IP,
-				Port:     bestServer.Port,
-				Map:      bestServer.Map,
-				GameMode: types.GetGameMode(bestServer.Map),
+				IP:          bestServer.IP,
+				Port:        bestServer.Port,
+				Map:         bestServer.Map,
+				PlayerCount: bestServer.Players,
+				GameMode:    types.GetGameMode(bestServer.Map),
 			}
 			s.groups[group.ID] = group
 		} else {
@@ -66,8 +67,8 @@ func (s *Tf2GroupServer) MatchGroup(group types.Group) {
 func (s *Tf2GroupServer) populateDefaultGroup() {
 	s.CreateGroup("GuuzTesting", types.ServerParameters{
 		Regions:    []string{"us-east", "us-central"},
-		Maps:       globals.AllMaps,
-		MinPlayers: 0,
+		Maps:       globals.DefaultMaps,
+		MinPlayers: 8,
 		MaxPlayers: 32,
 		CustomRules: types.CustomRules{
 			DisableThousandUncles: true,

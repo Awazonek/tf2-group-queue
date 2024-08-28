@@ -16,14 +16,19 @@ type Group struct {
 }
 
 type ServerInfo struct {
-	IP       string   `json:"ip"`
-	Port     int      `json:"port"`
-	Map      string   `json:"map"`
-	GameMode GameMode `json:"game_mode"`
+	IP          string   `json:"ip"`
+	Port        int      `json:"port"`
+	Map         string   `json:"map"`
+	PlayerCount int      `json:"player_count"`
+	GameMode    GameMode `json:"game_mode"`
 }
 
 // returns true if the server matches the groups requirements
 func (g *Group) MatchesServer(server Tf2Server) bool {
+	if g.ServerInfo.IP == server.IP && g.ServerInfo.Port == server.Port {
+		util.Log("We are already connected to server %s!", server.ID)
+		return false
+	}
 	// Basic checks
 	if !util.Contains(g.Parameters.Regions, server.Region) {
 		util.Log("Server %s is too far away, wanted region %s and we got %s", server.Name, strings.Join(g.Parameters.Regions, ","), server.Region)
@@ -60,13 +65,4 @@ func (g *Group) MatchesServer(server Tf2Server) bool {
 	}
 	util.Log("Server %s does not have the correct game mode, it has %d", server.Name, server.Mode)
 	return false
-}
-
-func (g *Group) getUserFacingGroupData() UserGroupData {
-	return UserGroupData{
-		ID:         g.ID,
-		Parameters: g.Parameters,
-		ServerInfo: g.ServerInfo,
-		Searching:  g.Searching,
-	}
 }
